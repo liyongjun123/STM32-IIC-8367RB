@@ -532,6 +532,8 @@ void help(void)
 	printf("\r\n");
 	printf("rpm  <phyAddr|all> <regAddr|all> : Read value(s) from phy register(s) using mdio.\r\n");
 	printf("wpm <phyAddr> <regAddr> <value>  : Write a value to a phy register using mdio.\r\n");
+	printf("\r\n");
+	printf("P<B|D|E><0-15> <RESET|SET>       : RESET or SET a GPIO_PIN. e.g. : PD12 RESET\r\n");
 	printf("=====================================================================================\r\n");
 }
 

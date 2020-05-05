@@ -156,12 +156,14 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
 /* USER CODE BEGIN 1 */
 
 void gpio_op(uint8_t *buf);
+void do_cmd(char *cmd);
 
 /* 打开uart1接收中断 */
 
 /* uart4接收处理函数 */
 void uart4_process(uint8_t *buf, uint16_t len)
 {
+
 	if(len >= BUFLEN - 1)
 	{
 		printf("command is to long!\r\n");
@@ -169,9 +171,8 @@ void uart4_process(uint8_t *buf, uint16_t len)
 	}
 	
 	buf[len] = '\0';
-//	printf("len = %d\n", len);
-//	printf("buf = %s\n", buf);
 	
+printf("%s\r\n", buf);
 	
 	if(strncmp("help", (char *)buf, 4) == 0)
 	{
@@ -192,8 +193,8 @@ void uart4_process(uint8_t *buf, uint16_t len)
 		pphyad = strtok(NULL, " ");
 		if(NULL == pphyad)
 		{
-			printf("read: para error!\r\n");
-			printf("read  <phyAddr|all> <regAddr|all>\r\n");
+			printf("rpm: para error!\r\n");
+			printf("rpm  <phyAddr|all> <regAddr|all>\r\n");
 			return;
 		}
 		
@@ -202,8 +203,8 @@ void uart4_process(uint8_t *buf, uint16_t len)
 		pregad = strtok(NULL, " ");
 		if(NULL == pregad)
 		{
-			printf("read: para error!\r\n");
-			printf("read  <phyAddr|all> <regAddr|all>\r\n");
+			printf("rpm: para error!\r\n");
+			printf("rpm  <phyAddr|all> <regAddr|all>\r\n");
 			return;
 		}
 		
@@ -342,151 +343,7 @@ void uart4_process(uint8_t *buf, uint16_t len)
 			printf("read  phy = 0x%02X reg = 0x%02X value = 0x%04X\r\n", phyad, regad, read_value);
 
 	}
-	else if(strncmp("8367read", (char *)buf, 8) == 0)
-	{
-		/* 8367read all 00 */
-		/* 8367read 00  00 */
-		/* 8367read 00  all */
-		/* 8367read all all */
-		
-		/* read */
-		strtok((char *)buf, " ");
-		
-		/* phyad */
-		char *pphyad = NULL;
-		pphyad = strtok(NULL, " ");
-		if(NULL == pphyad)
-		{
-			printf("8367read: para error!\r\n");
-			printf("8367read  <phyAddr|all> <regAddr|all>\r\n");
-			return;
-		}
-		
-		/* regad */
-		char *pregad = NULL;
-		pregad = strtok(NULL, " ");
-		if(NULL == pregad)
-		{
-			printf("8367read: para error!\r\n");
-			printf("8367read  <phyAddr|all> <regAddr|all>\r\n");
-			return;
-		}
-		
-		if(strncmp("all", pphyad, 3) == 0)
-		{
-			if(strncmp("all", pregad, 3) == 0)
-			{
-				uint16_t value = 0;
-				for(int i = 0; i < 32; i++)
-				{
-					for(int j = 0; j < 32; j++)
-					{
-						value = read_data_8367(i, j);
-						printf("8367read phy = 0x%02X reg = 0x%02X value = 0x%04X\r\n", i, j, value);
-//						HAL_Delay(10);
-					}
-				}
-			}else
-			{
-				
-				uint32_t regad = 0;
-				sscanf(pregad, "%x", &regad);
-				
-				uint16_t value = 0;
-				for(int i = 0; i < 32; i++)
-				{
-					value = read_data_8367(i, regad);
-					printf("8367read phy = 0x%02X reg = 0x%02X value = 0x%04X\r\n", i, regad, value);
-				}
-			}
-			
-		}
-		else
-		{
-			uint32_t phyad = 0;
-	//		printf("p = %s\n", p);
-			sscanf(pphyad, "%x", &phyad);
-	//		printf("regad = %x\n", regad);
-			
-			if(strncmp("all", pregad, 3) == 0)
-			{
-				uint16_t value = 0;
-				for(int i = 0; i < 32; i++)
-				{
-					value = read_data_8367(phyad, i);
-					printf("8367read phy = 0x%02X reg = 0x%02X value = 0x%04X\r\n", phyad, i, value);
-//					HAL_Delay(1);
-				}
-			}else
-			{
-				
-				uint32_t regad = 0;
-				sscanf(pregad, "%x", &regad);
-				
-				uint16_t value = 0;
-
-				value = read_data_8367(phyad, regad);
-				printf("8367read phy = 0x%02X reg = 0x%02X value = 0x%04X\r\n", phyad, regad, value);
-			}
-		}
-		
-	}else if(strncmp("8367write", (char *)buf, 9) == 0)
-	{
-		/* write 00 1f 3 */
-		
-		/* write */
-		strtok((char *)buf, " ");
-		
-		/* phyad */
-		char *pphyad = NULL;
-		pphyad = strtok(NULL, " ");
-		if(NULL == pphyad)
-		{
-			printf("write: para error!\r\n");
-			printf("write <phyAddr> <regAddr> <data>\r\n");
-			return;
-		}
-		
-		/* regad */
-		char *pregad = NULL;
-		pregad = strtok(NULL, " ");
-		if(NULL == pregad)
-		{
-			printf("write: para error!\r\n");
-			printf("write <phyAddr> <regAddr> <data>\r\n");
-			return;
-		}
-		
-		/* value */
-		char *pvalue = NULL;
-		pvalue = strtok(NULL, " ");
-		if(NULL == pvalue)
-		{
-			printf("write: para error!\r\n");
-			printf("write <phyAddr> <regAddr> <data>\r\n");
-			return;
-		}
-		
-		uint32_t phyad = 0;
-		sscanf(pphyad, "%x", &phyad);
-		
-		uint32_t regad = 0;
-		sscanf(pregad, "%x", &regad);
-		
-		
-		uint32_t value = 0;
-		sscanf(pvalue, "%x", &value);
-		
-		write_data_8367(phyad, regad, value);
-		printf("8367write phy = 0x%02X reg = 0x%02X value = 0x%04X\r\n", phyad, regad, value);
-		
-		value = read_data_8367(phyad, regad);
-		printf("8367read  phy = 0x%02X reg = 0x%02X value = 0x%04X\r\n", phyad, regad, value);
-		
-		value = read_data_8367(phyad, regad);
-		printf("8367read  phy = 0x%02X reg = 0x%02X value = 0x%04X\r\n", phyad, regad, value);
-
-	}else if(strncmp("r8i", (char *)buf, 3) == 0)
+	else if(strncmp("r8i", (char *)buf, 3) == 0)
 	{
 				/* read */
 		strtok((char *)buf, " ");
@@ -560,7 +417,7 @@ void uart4_process(uint8_t *buf, uint16_t len)
 		
 		if(strncmp("all", (char *)pregad, 3) == 0)
 		{
-			for(int i = 0; i < 32; i++)
+			for(int i = 0; i < 48; i++)
 			{
 				PHY_Read_Len(PHY_IIC_ADDR, i, 1, buf);
 			}
@@ -604,7 +461,7 @@ void uart4_process(uint8_t *buf, uint16_t len)
 		
 		if(strncmp("all", (char *)pregad, 3) == 0)
 		{
-			for(int i = 0; i < 32; i++)
+			for(int i = 0; i < 48; i++)
 			{
 				printf("write reg = 0x%02X value = 0x%02X\r\n", i, value);
 				PHY_Write_Byte(i, value);
@@ -630,6 +487,158 @@ void uart4_process(uint8_t *buf, uint16_t len)
 	{
 		gpio_op(buf);
 	}
+	else if(strncmp("init", (char *)buf, 4) == 0)
+	{
+		do_cmd("PD12 SET");
+		do_cmd("wpi 0x00 0x0");
+		do_cmd("wpi 0x01 0x0");
+		do_cmd("wpi 0x02 0x0");
+		do_cmd("wpi 0x03 0x0");
+		do_cmd("wpi 0x04 0x0");
+		do_cmd("wpi 0x05 0x0");
+		do_cmd("wpi 0x06 0x0");
+		do_cmd("wpi 0x07 0x0");
+		do_cmd("wpi 0x08 0x0");
+		do_cmd("wpi 0x09 0x0");
+		do_cmd("wpi 0x0a 0x0");
+		do_cmd("wpi 0x0b 0x0");
+		do_cmd("wpi 0x0c 0x0");
+		do_cmd("wpi 0x0d 0x0");
+		do_cmd("wpi 0x0e 0x0");
+		do_cmd("wpi 0x0f 0x0");
+		do_cmd("wpi 0x10 0x0");
+		do_cmd("wpi 0x11 0x0");
+		do_cmd("wpi 0x12 0x0");
+		do_cmd("wpi 0x13 0x0");
+		do_cmd("wpi 0x14 0x0");
+		do_cmd("wpi 0x15 0x0");
+		do_cmd("wpi 0x16 0x0");
+		do_cmd("wpi 0x17 0x0");
+		do_cmd("wpi 0x18 0x0");
+		do_cmd("wpi 0x19 0x0");
+		do_cmd("wpi 0x1a 0x0");
+		do_cmd("wpi 0x1b 0x0");
+		do_cmd("wpi 0x1c 0x0");
+		do_cmd("wpi 0x1d 0x0");
+		do_cmd("wpi 0x1e 0x0");
+		do_cmd("wpi 0x1f 0x0");
+		do_cmd("wpi 0x20 0x0");
+		do_cmd("wpi 0x21 0x0");
+		do_cmd("wpi 0x22 0x0");
+		do_cmd("wpi 0x23 0x0");
+		do_cmd("wpi 0x24 0x0");
+		do_cmd("wpi 0x25 0x0");
+		do_cmd("wpi 0x26 0x0");
+		do_cmd("wpi 0x27 0x0");
+		do_cmd("wpi 0x28 0x0");
+		do_cmd("wpi 0x29 0x0");
+		do_cmd("wpi 0x2a 0x0");
+		do_cmd("wpi 0x2b 0x0");
+		do_cmd("wpi 0x2c 0x0");
+		do_cmd("wpi 0x2d 0x0");
+		do_cmd("wpi 0x2e 0x0");
+		do_cmd("wpi 0x2f 0x4");
+		do_cmd("wpi 0x2f 0x0");
+		do_cmd("wpi 0x2f 0x1");
+// 1		
+		do_cmd("PD8 RESET");
+		do_cmd("wpi 0x05 0x1");
+		
+		do_cmd("wpm 1 0x1f 0x0");
+		do_cmd("wpm 1 0x09 0x0");
+		do_cmd("wpm 1 0x00 0x1140");
+		do_cmd("wpm 1 0x17 0x8");
+		do_cmd("wpm 1 0x18 0xffaa");
+		do_cmd("wpm 1 0x19 0xf6db");
+		do_cmd("wpm 1 0x1b 0x800");
+		do_cmd("wpm 1 0x1f 0x1");
+		do_cmd("wpm 1 0x10 0xa400");
+		do_cmd("wpm 1 0x11 0x2180");
+		do_cmd("wpm 1 0x12 0xe0d0");
+		do_cmd("wpm 1 0x14 0x1790");
+		do_cmd("wpm 1 0x18 0xcb");
+		do_cmd("wpm 1 0x1e 0x8680");
+		do_cmd("wpm 1 0x1f 0x2");
+		do_cmd("wpm 1 0x10 0x7fb6");
+		do_cmd("wpm 1 0x11 0x3773");
+		do_cmd("wpm 1 0x13 0x6db");
+		
+		do_cmd("PD8 SET");
+// 2		
+		do_cmd("PD9 RESET");
+		do_cmd("wpi 0x06 0x2");
+		
+		do_cmd("wpm 2 0x1f 0x0");
+		do_cmd("wpm 2 0x09 0x0");
+		do_cmd("wpm 2 0x00 0x1140");
+		do_cmd("wpm 2 0x17 0x8");
+		do_cmd("wpm 2 0x18 0xffaa");
+		do_cmd("wpm 2 0x19 0xf6db");
+		do_cmd("wpm 2 0x1b 0x800");
+		do_cmd("wpm 2 0x1f 0x1");
+		do_cmd("wpm 2 0x10 0xa400");
+		do_cmd("wpm 2 0x11 0x2180");
+		do_cmd("wpm 2 0x12 0xe0d0");
+		do_cmd("wpm 2 0x14 0x1790");
+		do_cmd("wpm 2 0x18 0xcb");
+		do_cmd("wpm 2 0x1e 0x8680");
+		do_cmd("wpm 2 0x1f 0x2");
+		do_cmd("wpm 2 0x10 0x7fb6");
+		do_cmd("wpm 2 0x11 0x3773");
+		do_cmd("wpm 2 0x13 0x6db");
+		
+		do_cmd("PD9 SET");		
+
+// 3		
+		do_cmd("PD10 RESET");
+		do_cmd("wpi 0x07 0x3");
+		
+		do_cmd("wpm 3 0x1f 0x0");
+		do_cmd("wpm 3 0x09 0x0");
+		do_cmd("wpm 3 0x00 0x1140");
+		do_cmd("wpm 3 0x17 0x8");
+		do_cmd("wpm 3 0x18 0xffaa");
+		do_cmd("wpm 3 0x19 0xf6db");
+		do_cmd("wpm 3 0x1b 0x800");
+		do_cmd("wpm 3 0x1f 0x1");
+		do_cmd("wpm 3 0x10 0xa400");
+		do_cmd("wpm 3 0x11 0x2180");
+		do_cmd("wpm 3 0x12 0xe0d0");
+		do_cmd("wpm 3 0x14 0x1790");
+		do_cmd("wpm 3 0x18 0xcb");
+		do_cmd("wpm 3 0x1e 0x8680");
+		do_cmd("wpm 3 0x1f 0x2");
+		do_cmd("wpm 3 0x10 0x7fb6");
+		do_cmd("wpm 3 0x11 0x3773");
+		do_cmd("wpm 3 0x13 0x6db");
+		
+		do_cmd("PD10 SET");	
+		
+// 3		
+		do_cmd("PD11 RESET");
+		do_cmd("wpi 0x08 0x4");
+		
+		do_cmd("wpm 4 0x1f 0x0");
+		do_cmd("wpm 4 0x09 0x0");
+		do_cmd("wpm 4 0x00 0x1140");
+		do_cmd("wpm 4 0x17 0x8");
+		do_cmd("wpm 4 0x18 0xffaa");
+		do_cmd("wpm 4 0x19 0xf6db");
+		do_cmd("wpm 4 0x1b 0x800");
+		do_cmd("wpm 4 0x1f 0x1");
+		do_cmd("wpm 4 0x10 0xa400");
+		do_cmd("wpm 4 0x11 0x2180");
+		do_cmd("wpm 4 0x12 0xe0d0");
+		do_cmd("wpm 4 0x14 0x1790");
+		do_cmd("wpm 4 0x18 0xcb");
+		do_cmd("wpm 4 0x1e 0x8680");
+		do_cmd("wpm 4 0x1f 0x2");
+		do_cmd("wpm 4 0x10 0x7fb6");
+		do_cmd("wpm 4 0x11 0x3773");
+		do_cmd("wpm 4 0x13 0x6db");
+		
+		do_cmd("PD11 SET");	
+	}
 	else
 	{
 		printf("unknown cmd!\r\n");
@@ -642,6 +651,14 @@ void uart4_process(uint8_t *buf, uint16_t len)
 	
 }
 
+
+void do_cmd(char *cmd)
+{
+	char buf[100] = {0};
+		
+	strncpy(buf, cmd, sizeof(buf) - 1);
+	uart4_process((uint8_t *)buf, strlen(buf) + 1);
+}
 
 void gpio_op(uint8_t *buf)
 {
