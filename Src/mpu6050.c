@@ -1,52 +1,5 @@
 #include "mpu6050.h"
 
-/* 初始化MPU6050 */
-uint8_t MPU6050_Init(void)
-{
-	MPU6050_Write_Byte(MPU_PWR_MGMT1_REG, 0x80);	//重启
-	HAL_Delay(100);
-	MPU6050_Write_Byte(MPU_PWR_MGMT1_REG, 0x00);	//唤醒
-//	MPU6050_Write_Byte(MPU_FIFO_EN_REG,0X00);	//关闭FIFO
-//	MPU6050_Write_Byte(MPU_USER_CTRL_REG,0X00);	//I2C主模式关闭
-//	MPU6050_Write_Byte(MPU_INT_EN_REG,0X00);	//关闭所有中断
-//	MPU6050_Write_Byte(MPU_INTBP_CFG_REG,0X80);	//INT引脚低电平有效
-//	uint16_t rate = 50;
-//	uint8_t data;
-//	if(rate>1000)rate=1000;
-//	if(rate<4)rate=4;
-//	data=1000/rate-1;
-//	data=MPU6050_Write_Byte(MPU_SAMPLE_RATE_REG,data);	//设置数字低通滤波器
-// 	uint16_t lpf = 25;
-//	data=0;
-//	if(lpf>=188)data=1;
-//	else if(lpf>=98)data=2;
-//	else if(lpf>=42)data=3;
-//	else if(lpf>=20)data=4;
-//	else if(lpf>=10)data=5;
-//	else data=6; 
-//	return MPU6050_Write_Byte(MPU_CFG_REG,data);//设置数字低通滤波器 
-	
-}
-
-/* 读取温度 */
-uint16_t MPU6050_Read_Temperature(void)
-{
-	uint8_t buf[2];
-	int16_t raw;		//为什么是int16_t呢，是因为手册中有说到：TEMP_OUT 16为有符号数值
-	float temp;
-	MPU6050_Read_Len(MPU6050_ADDR, 0xC0, 2, buf);
-	raw = buf[0] << 8 | buf[1];
-//	printf("raw = 0x%x\r\n", raw);
-	temp = 36.53 + (double)raw / 340;
-	printf("temp = %f\r\n", temp);
-	
-	
-//	int16_t f = -32767;
-////	f = 0x80 << 8;
-//	printf("f = 0x%x\r\n", f);
-//	printf("sizeof(f) = %d\r\n", sizeof(f));
-//	printf("f = %d\r\n", f);
-}
 
 /* IIC写1Byte */
 uint8_t MPU6050_Write_Byte(uint8_t reg, uint8_t data)

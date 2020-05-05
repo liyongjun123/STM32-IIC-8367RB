@@ -287,7 +287,7 @@ HAL_GPIO_WritePin(MDIO_GPIO_Port, MDIO_Pin, GPIO_PIN_SET);
 		dat <<= 1;
 	}
 #endif
-#if 1
+//#if 1
 	HAL_GPIO_WritePin(MDC_GPIO_Port, MDC_Pin, GPIO_PIN_SET);
 	HAL_GPIO_WritePin(MDC_GPIO_Port, MDC_Pin, GPIO_PIN_RESET);
 	
@@ -298,37 +298,37 @@ HAL_GPIO_WritePin(MDIO_GPIO_Port, MDIO_Pin, GPIO_PIN_SET);
 
 
 uint16_t out_data = 0x0000;	
-	if(GPIO_PIN_RESET != HAL_GPIO_ReadPin(MDIO_GPIO_Port, MDIO_Pin))
-	{
-//		printf("gaoooooo\r\n");
-	
-#endif
-	
-	/* 7. 读取16bits数据 */	
-			/* 将io切换为输入模数 */
-	//	mdio_input();
-//		uint16_t out_data = 0x0000;
-		
+//	if(GPIO_PIN_RESET != HAL_GPIO_ReadPin(MDIO_GPIO_Port, MDIO_Pin))
+//	{
+////		printf("gaoooooo\r\n");
+//	
+//#endif
+//	
+//	/* 7. 读取16bits数据 */	
+//			/* 将io切换为输入模数 */
+//	//	mdio_input();
+////		uint16_t out_data = 0x0000;
+//		
 
-		for(i = 0; i < 16; i++)
-		{
-			out_data <<= 1;
-			
-			if(GPIO_PIN_SET == HAL_GPIO_ReadPin(MDIO_GPIO_Port, MDIO_Pin))
-				out_data |= 0x0001;
+//		for(i = 0; i < 16; i++)
+//		{
+//			out_data <<= 1;
+//			
+//			if(GPIO_PIN_SET == HAL_GPIO_ReadPin(MDIO_GPIO_Port, MDIO_Pin))
+//				out_data |= 0x0001;
 
-			HAL_GPIO_WritePin(MDC_GPIO_Port, MDC_Pin, GPIO_PIN_SET);
-			HAL_GPIO_WritePin(MDC_GPIO_Port, MDC_Pin, GPIO_PIN_RESET);	
-		}
-		
-		for(i = 0; i < 8; i++)
-		{
-			HAL_GPIO_WritePin(MDC_GPIO_Port, MDC_Pin, GPIO_PIN_SET);
-			HAL_GPIO_WritePin(MDC_GPIO_Port, MDC_Pin, GPIO_PIN_RESET);
-		}
-	
-		return 0xFFFF;
-	}
+//			HAL_GPIO_WritePin(MDC_GPIO_Port, MDC_Pin, GPIO_PIN_SET);
+//			HAL_GPIO_WritePin(MDC_GPIO_Port, MDC_Pin, GPIO_PIN_RESET);	
+//		}
+//		
+//		for(i = 0; i < 8; i++)
+//		{
+//			HAL_GPIO_WritePin(MDC_GPIO_Port, MDC_Pin, GPIO_PIN_SET);
+//			HAL_GPIO_WritePin(MDC_GPIO_Port, MDC_Pin, GPIO_PIN_RESET);
+//		}
+//	
+//		return 0xFFFF;
+//	}
 	
 	for(i = 0; i < 16; i++)
 	{
@@ -518,13 +518,21 @@ void write_data_8367(uint8_t phyad, uint16_t regad, uint16_t out_data)
 
 void help(void)
 {
-	printf("==================================\r\n");
-	printf("read  <phyAddr|all> <regAddr|all>\r\n");
-	printf("write <phyAddr> <regAddr> <value>\r\n");
+	printf("=====================================================================================\r\n");
+	
+//	printf("\r\n");
+//	printf("8367read  <phyAddr|all> <regAddr|all>\r\n");
+//	printf("8367write <phyAddr> <regAddr> <value>\r\n");
+	
+	printf("r8i <regAddr>                    : Read  a value from a RTL8367RB register using iic.\r\n");
+	printf("w8i <regAddr> <value>            : Write a value  to  a RTL8367RB register using iic.\r\n");
 	printf("\r\n");
-	printf("8367read  <phyAddr|all> <regAddr|all>\r\n");
-	printf("8367write <phyAddr> <regAddr> <value>\r\n");
-	printf("==================================\r\n");
+	printf("rpi <regAddr>                    : Read  a value from a phy register using iic.\r\n");
+	printf("wpi <regAddr> <value>            : Write a value  to  a phy register using iic.\r\n");
+	printf("\r\n");
+	printf("rpm  <phyAddr|all> <regAddr|all> : Read value(s) from phy register(s) using mdio.\r\n");
+	printf("wpm <phyAddr> <regAddr> <value>  : Write a value to a phy register using mdio.\r\n");
+	printf("=====================================================================================\r\n");
 }
 
 

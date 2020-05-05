@@ -60,7 +60,8 @@ void Error_Handler(void);
 /* USER CODE BEGIN 0 */
 void show(void)
 {
-	printf("\r\nMDIO for RTL8367RB\r\n\r\n");
+	printf("\r\nIIC for RTL8367RB and PHY\r\n");
+	printf("MDIO for PHY\r\n");
 	
 	help();
 }

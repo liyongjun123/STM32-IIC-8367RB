@@ -41,6 +41,40 @@
 
 /* Private define ------------------------------------------------------------*/
 
+#define GMII_0_Pin GPIO_PIN_1
+#define GMII_0_GPIO_Port GPIOA
+#define GMII_1_Pin GPIO_PIN_2
+#define GMII_1_GPIO_Port GPIOA
+#define GMII_2_Pin GPIO_PIN_3
+#define GMII_2_GPIO_Port GPIOA
+#define GMII_3_Pin GPIO_PIN_4
+#define GMII_3_GPIO_Port GPIOA
+#define GMII_4_Pin GPIO_PIN_5
+#define GMII_4_GPIO_Port GPIOA
+#define RGMII_CFG_Pin GPIO_PIN_6
+#define RGMII_CFG_GPIO_Port GPIOA
+#define REFS0_Pin GPIO_PIN_8
+#define REFS0_GPIO_Port GPIOE
+#define REFS1_Pin GPIO_PIN_9
+#define REFS1_GPIO_Port GPIOE
+#define PWRDN_ALL_Pin GPIO_PIN_10
+#define PWRDN_ALL_GPIO_Port GPIOE
+#define TURBO_SIM_Pin GPIO_PIN_11
+#define TURBO_SIM_GPIO_Port GPIOE
+#define IIC_CLK_2_Pin GPIO_PIN_10
+#define IIC_CLK_2_GPIO_Port GPIOB
+#define IIC_SDA_2_Pin GPIO_PIN_11
+#define IIC_SDA_2_GPIO_Port GPIOB
+#define RSTN_P0_Pin GPIO_PIN_8
+#define RSTN_P0_GPIO_Port GPIOD
+#define RSTN_P1_Pin GPIO_PIN_9
+#define RSTN_P1_GPIO_Port GPIOD
+#define RSTN_P2_Pin GPIO_PIN_10
+#define RSTN_P2_GPIO_Port GPIOD
+#define RSTN_P3_Pin GPIO_PIN_11
+#define RSTN_P3_GPIO_Port GPIOD
+#define PWR_RSTN_Pin GPIO_PIN_12
+#define PWR_RSTN_GPIO_Port GPIOD
 #define MDC_Pin GPIO_PIN_8
 #define MDC_GPIO_Port GPIOC
 #define MDIO_Pin GPIO_PIN_9

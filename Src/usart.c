@@ -40,8 +40,10 @@
 
 /* USER CODE BEGIN 0 */
 #include <string.h>
+#include <stdlib.h>
 #include "mdio.h"
 #include "mpu6050.h"
+#include "iic_2_phy.h"
 
 #define BUFLEN 100
 uint8_t receive_buf[BUFLEN];
@@ -153,6 +155,8 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
 
 /* USER CODE BEGIN 1 */
 
+void gpio_op(uint8_t *buf);
+
 /* 打开uart1接收中断 */
 
 /* uart4接收处理函数 */
@@ -173,7 +177,7 @@ void uart4_process(uint8_t *buf, uint16_t len)
 	{
 		help();
 		
-	}else if(strncmp("read", (char *)buf, 4) == 0)
+	}else if(strncmp("rpm", (char *)buf, 3) == 0)
 	{
 		/* read all 00 */
 		/* read 00  00 */
@@ -246,10 +250,12 @@ void uart4_process(uint8_t *buf, uint16_t len)
 				for(int i = 0; i < 32; i++)
 				{
 					value = read_data(phyad, i);
-					printf("read phy = 0x%02X reg = 0x%02X value = 0x%04X\r\n", phyad, i, value);
+					if(value != 0xffff)
+						printf("read phy = 0x%02X reg = 0x%02X value = 0x%04X\r\n", phyad, i, value);
 //					printf("666\r\n");
-//					value = read_data(phyad, i);
-//					printf("read phy = 0x%02X reg = 0x%02X value = 0x%04X\r\n", phyad, i, value);
+					value = read_data(phyad, i);
+					if(value != 0xffff)
+						printf("read phy = 0x%02X reg = 0x%02X value = 0x%04X\r\n", phyad, i, value);
 //					HAL_Delay(10);
 				}
 //				printf("777\r\n");
@@ -266,7 +272,7 @@ void uart4_process(uint8_t *buf, uint16_t len)
 			}
 		}
 		
-	}else if(strncmp("write", (char *)buf, 5) == 0)
+	}else if(strncmp("wpm", (char *)buf, 3) == 0)
 	{
 		/*  */
 		/* write */
@@ -314,13 +320,26 @@ void uart4_process(uint8_t *buf, uint16_t len)
 		sscanf(pvalue, "%x", &value);
 		
 		write_data(phyad, regad, value);
+		
 		printf("write phy = 0x%02X reg = 0x%02X value = 0x%04X\r\n", phyad, regad, value);
 		
-		value = read_data(phyad, regad);
-		printf("eead  phy = 0x%02X reg = 0x%02X value = 0x%04X\r\n", phyad, regad, value);
-
-		value = read_data(phyad, regad);
-		printf("eead  phy = 0x%02X reg = 0x%02X value = 0x%04X\r\n", phyad, regad, value);
+		uint32_t read_value = 0;
+		read_value = read_data(phyad, regad);
+//		if(value != 0xffff)
+//		printf("read  phy = 0x%02X reg = 0x%02X value = 0x%04X\r\n", phyad, regad, read_value);
+		
+		write_data(phyad, regad, value);
+		read_value = read_data(phyad, regad);
+//		if(value != 0xffff)
+//		printf("read  phy = 0x%02X reg = 0x%02X value = 0x%04X\r\n", phyad, regad, read_value);
+		
+		read_value = read_data(phyad, regad);
+		if(read_value != 0xffff)
+			printf("read  phy = 0x%02X reg = 0x%02X value = 0x%04X\r\n", phyad, regad, read_value);
+		
+		read_value = read_data(phyad, regad);
+		if(read_value != 0xffff)
+			printf("read  phy = 0x%02X reg = 0x%02X value = 0x%04X\r\n", phyad, regad, read_value);
 
 	}
 	else if(strncmp("8367read", (char *)buf, 8) == 0)
@@ -467,7 +486,7 @@ void uart4_process(uint8_t *buf, uint16_t len)
 		value = read_data_8367(phyad, regad);
 		printf("8367read  phy = 0x%02X reg = 0x%02X value = 0x%04X\r\n", phyad, regad, value);
 
-	}else if(strncmp("riic", (char *)buf, 4) == 0)
+	}else if(strncmp("r8i", (char *)buf, 3) == 0)
 	{
 				/* read */
 		strtok((char *)buf, " ");
@@ -488,7 +507,7 @@ void uart4_process(uint8_t *buf, uint16_t len)
 		
 		MPU6050_Read_Len(MPU6050_ADDR, regad, 2, buf);
 	}
-	else if(strncmp("wiic", (char *)buf, 4) == 0)
+	else if(strncmp("w8i", (char *)buf, 3) == 0)
 	{
 		/* write */
 		strtok((char *)buf, " ");
@@ -524,6 +543,93 @@ void uart4_process(uint8_t *buf, uint16_t len)
 		MPU6050_Write_Len(MPU6050_ADDR, regad, 2, value);
 		MPU6050_Read_Len(MPU6050_ADDR, regad, 2, buf);
 	}
+	else if(strncmp("rpi", (char *)buf, 3) == 0)
+	{
+				/* read */
+		strtok((char *)buf, " ");
+		
+		/* phyad */
+		char *pregad = NULL;
+		pregad = strtok(NULL, " ");
+		if(NULL == pregad)
+		{
+			printf("read: para error!\r\n");
+			printf("read  <regAddr>\r\n");
+			return;
+		}
+		
+		if(strncmp("all", (char *)pregad, 3) == 0)
+		{
+			for(int i = 0; i < 32; i++)
+			{
+				PHY_Read_Len(PHY_IIC_ADDR, i, 1, buf);
+			}
+		}else
+		{
+			uint32_t regad = 0;
+			sscanf(pregad, "%x", &regad);
+	//		printf("regad = 0x%0X\r\n", regad);
+			
+			PHY_Read_Len(PHY_IIC_ADDR, regad, 1, buf);
+		}
+		
+
+	}
+	else if(strncmp("wpi", (char *)buf, 3) == 0)
+	{
+		/* write */
+		strtok((char *)buf, " ");
+		
+		/* regad */
+		char *pregad = NULL;
+		pregad = strtok(NULL, " ");
+		if(NULL == pregad)
+		{
+			printf("write: para error!\r\n");
+			printf("write <regAddr> <value>\r\n");
+			return;
+		}
+		
+		/* value */
+		char *pvalue = NULL;
+		pvalue = strtok(NULL, " ");
+		if(NULL == pvalue)
+		{
+			printf("write: para error!\r\n");
+			printf("write <regAddr> <value>\r\n");
+			return;
+		}
+		uint32_t value = 0;
+		sscanf(pvalue, "%x", &value);
+		
+		if(strncmp("all", (char *)pregad, 3) == 0)
+		{
+			for(int i = 0; i < 32; i++)
+			{
+				printf("write reg = 0x%02X value = 0x%02X\r\n", i, value);
+				PHY_Write_Byte(i, value);
+			}
+		}
+		else
+		{
+			uint32_t regad = 0;
+			sscanf(pregad, "%x", &regad);
+//		printf("regad = 0x%0X\r\n", regad);
+		
+		
+//		printf("value = 0x%0X\r\n", value);
+		printf("write reg = 0x%02X value = 0x%02X\r\n", regad, value);
+		PHY_Write_Byte(regad, value);
+//		PHY_Write_Byte(PHY_IIC_ADDR, regad, 2, value);
+		PHY_Read_Len(PHY_IIC_ADDR, regad, 1, buf);
+		}
+		
+
+	}
+	else if(strncmp("P", (char *)buf, 1) == 0)
+	{
+		gpio_op(buf);
+	}
 	else
 	{
 		printf("unknown cmd!\r\n");
@@ -536,6 +642,70 @@ void uart4_process(uint8_t *buf, uint16_t len)
 	
 }
 
+
+void gpio_op(uint8_t *buf)
+{
+//	if(strncmp("PA1", (char *)buf, 3) == 0)
+//	{
+//		/* regad */
+//		char *p = NULL;
+//		p = strtok(NULL, " ");
+//		if(NULL == p)
+//		{
+//			printf("PA1 SET\r\n");
+//			printf("PA1 RESET\r\n");
+//			return;
+//		}
+//		
+//		if(strncmp("SET", p, 3) == 0)
+//		{
+//			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_1, GPIO_PIN_SET);
+//		}
+//		else
+//		{
+//			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_1, GPIO_PIN_RESET);
+//		}
+//	}
+//	else if(strncmp("PE10", (char *)buf, 4) == 0)
+//	{
+	strtok((char *)buf, " ");
+
+		char *p = NULL;
+		p = strtok(NULL, " ");
+		if(NULL == p)
+		{
+			printf("PA1 SET\r\n");
+			printf("PA1 RESET\r\n");
+			return;
+		}
+		
+		int value = 0;
+		if(strncmp("SET", p, 3) == 0)
+		{
+			value = 1;
+		}
+		
+		int position;
+		position = atoi((char *)(buf + 2));
+		switch((char)buf[1])
+		{
+			case 'B':
+				HAL_GPIO_WritePin(GPIOB, 1 << position, (GPIO_PinState)value);
+			break;
+			
+			case 'D':
+				HAL_GPIO_WritePin(GPIOD, 1 << position, (GPIO_PinState)value);
+			break;
+			
+			case 'E':
+				HAL_GPIO_WritePin(GPIOE, 1 << position, (GPIO_PinState)value);
+			break;
+				
+		}
+		
+		
+//	}
+}
 
 void uart4_start_receive_it(void)
 {
