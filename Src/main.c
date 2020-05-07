@@ -96,7 +96,7 @@ int main(void)
 ////		MPU6050_Init();
 //		
 //	MPU6050_Read_Temperature();
-uint8_t buf[2];
+//uint8_t buf[2];
 //MPU6050_Read_Len(MPU6050_ADDR, 0xC0, 2, buf);
 	
 //	HAL_GPIO_WritePin(IIC_CLK_GPIO_Port, IIC_CLK_Pin, GPIO_PIN_SET);

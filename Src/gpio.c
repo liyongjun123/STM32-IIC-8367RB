@@ -66,7 +66,10 @@ void MX_GPIO_Init(void)
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOA, GMII_0_Pin|GMII_1_Pin|GMII_2_Pin|GMII_3_Pin 
-                          |GMII_4_Pin|RGMII_CFG_Pin, GPIO_PIN_RESET);
+                          |GMII_4_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(RGMII_CFG_GPIO_Port, RGMII_CFG_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOE, REFS0_Pin|REFS1_Pin|PWRDN_ALL_Pin|TURBO_SIM_Pin, GPIO_PIN_RESET);

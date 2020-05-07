@@ -1,6 +1,21 @@
 #include "mdio.h"
 #include "stm32f1xx_hal.h"
 
+
+void Delay_us2(unsigned long CountLing)
+{
+    signed char i;
+    while(CountLing--)
+    {
+        i = 10;
+        while(i--);
+    }
+}
+void delay(void)
+{
+	Delay_us2(10);
+}
+
 /* 设置MDIO引脚为输出模式 */
 static void mdio_output(void)
 {
@@ -177,7 +192,7 @@ uint8_t mdio_read_byte(void)
 
 uint16_t all(uint8_t regad);
 
-uint16_t read_data(uint8_t phyad, uint8_t regad)
+uint16_t read_data2(uint8_t phyad, uint8_t regad)
 {
 //	mdio_clk();
 //	mdio_read_start();
@@ -261,17 +276,20 @@ uint16_t read_data(uint8_t phyad, uint8_t regad)
 			HAL_GPIO_WritePin(MDIO_GPIO_Port, MDIO_Pin, GPIO_PIN_RESET);
 		
 		HAL_GPIO_WritePin(MDC_GPIO_Port, MDC_Pin, GPIO_PIN_SET);
-		HAL_GPIO_WritePin(MDC_GPIO_Port, MDC_Pin, GPIO_PIN_RESET);
+		if(i < 4)
+			HAL_GPIO_WritePin(MDC_GPIO_Port, MDC_Pin, GPIO_PIN_RESET);
 		dat <<= 1;
 	}
 
 /* 5. 转场10 turn around */
-	dat = 0x02;
+	dat = 0x00;
 	
 	/* 将io切换为输出模式 */
 //  mdio_output();	
 HAL_GPIO_WritePin(MDIO_GPIO_Port, MDIO_Pin, GPIO_PIN_SET);
-	mdio_input();
+	HAL_GPIO_WritePin(MDC_GPIO_Port, MDC_Pin, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(MDIO_GPIO_Port, MDIO_Pin, GPIO_PIN_RESET);
+//	mdio_input();
 #if 0
 	for(i = 0; i < 2; i++)
 	{
@@ -287,11 +305,11 @@ HAL_GPIO_WritePin(MDIO_GPIO_Port, MDIO_Pin, GPIO_PIN_SET);
 		dat <<= 1;
 	}
 #endif
-//#if 1
+#if 1
 	HAL_GPIO_WritePin(MDC_GPIO_Port, MDC_Pin, GPIO_PIN_SET);
 	HAL_GPIO_WritePin(MDC_GPIO_Port, MDC_Pin, GPIO_PIN_RESET);
 	
-	
+	mdio_input();
 	
 	HAL_GPIO_WritePin(MDC_GPIO_Port, MDC_Pin, GPIO_PIN_SET);
 	HAL_GPIO_WritePin(MDC_GPIO_Port, MDC_Pin, GPIO_PIN_RESET);
@@ -302,7 +320,7 @@ uint16_t out_data = 0x0000;
 //	{
 ////		printf("gaoooooo\r\n");
 //	
-//#endif
+#endif
 //	
 //	/* 7. 读取16bits数据 */	
 //			/* 将io切换为输入模数 */
@@ -329,7 +347,7 @@ uint16_t out_data = 0x0000;
 //	
 //		return 0xFFFF;
 //	}
-	
+	mdio_input();
 	for(i = 0; i < 16; i++)
 	{
 		out_data <<= 1;
@@ -352,7 +370,7 @@ uint16_t out_data = 0x0000;
 }
 
 
-void write_data(uint8_t phyad, uint8_t regad, uint16_t out_data)
+void write_data2(uint8_t phyad, uint8_t regad, uint16_t out_data)
 {
 
 /* 0. 空闲 IDLE mdio_clk */
@@ -523,7 +541,9 @@ void help(void)
 //	printf("\r\n");
 //	printf("8367read  <phyAddr|all> <regAddr|all>\r\n");
 //	printf("8367write <phyAddr> <regAddr> <value>\r\n");
-	
+	printf("init8                            : Init RTL8367RB.\r\n");
+	printf("initp                            : Init PHY.\r\n");
+	printf("\r\n");
 	printf("r8i <regAddr>                    : Read  a value from a RTL8367RB register using iic.\r\n");
 	printf("w8i <regAddr> <value>            : Write a value  to  a RTL8367RB register using iic.\r\n");
 	printf("\r\n");
@@ -537,4 +557,130 @@ void help(void)
 	printf("=====================================================================================\r\n");
 }
 
+
+#define SDA_IN()  {GPIOC->CRH&=0XFFFFFF0F;GPIOC->CRH|=8<<4;}
+#define SDA_OUT() {GPIOC->CRH&=0XFFFFFF0F;GPIOC->CRH|=3<<4;}
+
+#define MDC_L() HAL_GPIO_WritePin(MDC_GPIO_Port, MDC_Pin, GPIO_PIN_RESET)
+#define MDC_H() HAL_GPIO_WritePin(MDC_GPIO_Port, MDC_Pin, GPIO_PIN_SET)
+
+#define MDIO_OUT() SDA_OUT()
+#define MDIO_IN() SDA_IN()
+
+#define GET_MDIO() HAL_GPIO_ReadPin(MDIO_GPIO_Port, MDIO_Pin)
+
+/* MDIO????bit???,MDIO?????????? */
+static void mdio_bb_send_bit(int val)
+{
+       
+    HAL_GPIO_WritePin(MDIO_GPIO_Port, MDIO_Pin, (GPIO_PinState)val);
+    delay();
+    MDC_L();
+    delay();
+    MDC_H();
+}
+
+static void mdio_bb_send_num(unsigned int value ,int bits)
+{
+    int i;
+    MDIO_OUT();
+    
+    for(i = bits - 1; i >= 0; i--)
+        mdio_bb_send_bit((value >> i) & 1);
+}
+
+static int mdio_bb_get_bit(void)
+{
+    int value;
+
+    delay();
+    MDC_L();
+    delay();
+    MDC_H();
+    
+    value = GET_MDIO();
+    
+    return value;
+}
+
+static int mdio_bb_get_num(int bits)
+{
+    int i;
+    int ret = 0;
+    for(i = bits - 1; i >= 0; i--)
+    {
+        ret <<= 1;
+        ret |= mdio_bb_get_bit(); 
+    }
+
+    return ret;
+}
+
+uint16_t read_data(uint8_t phy, uint8_t reg)
+{
+	int ret, i = 0;
+	MDIO_OUT();
+	for(i = 0; i < 32; i++)
+		mdio_bb_send_bit(1);
+	
+	mdio_bb_send_bit(0);
+   mdio_bb_send_bit(1);
+	
+	mdio_bb_send_bit((2 >> 1) & 1);
+  mdio_bb_send_bit((2 >> 0) & 1);
+	
+	mdio_bb_send_num(phy,5);
+  mdio_bb_send_num(reg,5);
+	
+	MDIO_IN();
+	if(mdio_bb_get_bit() != 0)
+	{
+			/* PHY didn't driver TA low -- flush any bits it may be trying to send*/
+			for(i = 0; i < 32; i++)
+					mdio_bb_get_bit();
+			return 0xFFFF;
+	}
+	
+	ret = mdio_bb_get_num(16);
+	mdio_bb_get_bit();
+	return ret;
+
+}
+
+void write_data(uint8_t phy, uint8_t reg, uint16_t value)
+{
+	int i = 0;
+	MDIO_OUT();
+	for(i = 0; i < 32; i++)
+		mdio_bb_send_bit(1);
+	
+	mdio_bb_send_bit(0);
+   mdio_bb_send_bit(1);
+	
+	mdio_bb_send_bit((1 >> 1) & 1);
+  mdio_bb_send_bit((1 >> 0) & 1);
+	
+	mdio_bb_send_num(phy,5);
+  mdio_bb_send_num(reg,5);
+	
+//	MDIO_IN();
+//	if(mdio_bb_get_bit() != 0)
+//	{
+//			/* PHY didn't driver TA low -- flush any bits it may be trying to send*/
+//			for(i = 0; i < 32; i++)
+//					mdio_bb_get_bit();
+//			return 0xFFFF;
+//	}
+
+ /*  send the turnaround (10) */  
+    mdio_bb_send_bit(1);
+    mdio_bb_send_bit(0);
+		
+		mdio_bb_send_num(value,16);
+	
+//	ret = mdio_bb_get_num(16);
+//	mdio_bb_get_bit();
+//	return ret;
+
+}
 
