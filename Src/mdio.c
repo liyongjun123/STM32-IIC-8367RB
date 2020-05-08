@@ -213,7 +213,7 @@ uint16_t read_data2(uint8_t phyad, uint8_t regad)
   mdio_output();	
 	
 	
-	for(i = 0; i < 16; i++)
+	for(i = 0; i < 32; i++)
 	{
 		HAL_GPIO_WritePin(MDC_GPIO_Port, MDC_Pin, GPIO_PIN_SET);
 		HAL_GPIO_WritePin(MDC_GPIO_Port, MDC_Pin, GPIO_PIN_RESET);
@@ -359,11 +359,11 @@ uint16_t out_data = 0x0000;
 		HAL_GPIO_WritePin(MDC_GPIO_Port, MDC_Pin, GPIO_PIN_RESET);	
 	}
 	
-	for(i = 0; i < 8; i++)
-	{
-		HAL_GPIO_WritePin(MDC_GPIO_Port, MDC_Pin, GPIO_PIN_SET);
-		HAL_GPIO_WritePin(MDC_GPIO_Port, MDC_Pin, GPIO_PIN_RESET);
-	}
+//	for(i = 0; i < 8; i++)
+//	{
+//		HAL_GPIO_WritePin(MDC_GPIO_Port, MDC_Pin, GPIO_PIN_SET);
+//		HAL_GPIO_WritePin(MDC_GPIO_Port, MDC_Pin, GPIO_PIN_RESET);
+//	}
 	
 	return out_data;
 	
@@ -380,11 +380,11 @@ void write_data2(uint8_t phyad, uint8_t regad, uint16_t out_data)
 	/* 将io切换为输出模式 */
   mdio_output();	
 	
-//	for(i = 0; i < 8; i++)
-//	{
-//		HAL_GPIO_WritePin(MDC_GPIO_Port, MDC_Pin, GPIO_PIN_SET);
-//		HAL_GPIO_WritePin(MDC_GPIO_Port, MDC_Pin, GPIO_PIN_RESET);
-//	}
+	for(i = 0; i < 32; i++)
+	{
+		HAL_GPIO_WritePin(MDC_GPIO_Port, MDC_Pin, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(MDC_GPIO_Port, MDC_Pin, GPIO_PIN_RESET);
+	}
 	
 	
 /* 1. 起始位01 + 2. 写命令01 mdio_read_start */
@@ -644,7 +644,9 @@ uint16_t read_data(uint8_t phy, uint8_t reg)
 	}
 	
 	ret = mdio_bb_get_num(16);
+	
 	mdio_bb_get_bit();
+
 	return ret;
 
 }
@@ -680,6 +682,9 @@ void write_data(uint8_t phy, uint8_t reg, uint16_t value)
 		
 		mdio_bb_send_num(value,16);
 	
+	
+//	for(i = 0; i < 32; i++)
+		mdio_bb_send_bit(1);
 //	ret = mdio_bb_get_num(16);
 //	mdio_bb_get_bit();
 //	return ret;

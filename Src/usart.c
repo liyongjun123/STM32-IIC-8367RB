@@ -327,16 +327,16 @@ printf("%s\r\n", buf);
 		uint32_t read_value = 0;
 		read_value = read_data(phyad, regad);
 //		if(value != 0xffff)
-//		printf("read  phy = 0x%02X reg = 0x%02X value = 0x%04X\r\n", phyad, regad, read_value);
+		printf("read  phy = 0x%02X reg = 0x%02X value = 0x%04X\r\n", phyad, regad, read_value);
 		
-		write_data(phyad, regad, value);
-		read_value = read_data(phyad, regad);
+//		write_data(phyad, regad, value);
+//		read_value = read_data(phyad, regad);
 //		if(value != 0xffff)
 //		printf("read  phy = 0x%02X reg = 0x%02X value = 0x%04X\r\n", phyad, regad, read_value);
 		
-		read_value = read_data(phyad, regad);
+//		read_value = read_data(phyad, regad);
 //		if(read_value != 0xffff)
-		printf("read  phy = 0x%02X reg = 0x%02X value = 0x%04X\r\n", phyad, regad, read_value);
+//		printf("read  phy = 0x%02X reg = 0x%02X value = 0x%04X\r\n", phyad, regad, read_value);
 		
 //		read_value = read_data(phyad, regad);
 //		if(read_value != 0xffff)
