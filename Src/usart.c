@@ -489,12 +489,14 @@ printf("%s\r\n", buf);
 	}
 	else if(strncmp("init8", (char *)buf, 5) == 0)
 	{
-		do_cmd("w8i 0x1305 0x10");
+		do_cmd("w8i 0x1305 0x11");
 		do_cmd("w8i 0x13c3 0x01");
-		do_cmd("w8i 0x1307 0x08");
-		do_cmd("w8i 0x13c5 0x08");
+		do_cmd("w8i 0x1306 0x00");
+		do_cmd("w8i 0x1307 0x00");
+		do_cmd("w8i 0x13c5 0x00");
 		do_cmd("w8i 0x1310 0x1076");
 		do_cmd("w8i 0x1311 0x1076");
+		do_cmd("w8i 0x13c4 0x1076");
 
 	}
 	else if(strncmp("initp", (char *)buf, 5) == 0)
@@ -559,7 +561,7 @@ printf("%s\r\n", buf);
 		do_cmd("wpm 11 0x17 0x7C02");
 		do_cmd("wpm 11 0x18 0xffaa");
 		do_cmd("wpm 11 0x19 0xf6db");
-		do_cmd("wpm 11 0x1b 0x400");
+		do_cmd("wpm 11 0x1b 0x0965");
 		do_cmd("wpm 11 0x1f 0x1");
 		do_cmd("wpm 11 0x10 0xa400");
 		do_cmd("wpm 11 0x11 0x2108");
@@ -571,6 +573,7 @@ printf("%s\r\n", buf);
 		do_cmd("wpm 11 0x10 0x7fb6");
 		do_cmd("wpm 11 0x11 0x3773");
 		do_cmd("wpm 11 0x13 0x6db");
+		do_cmd("wpm 11 0x15 0x03c3");
 		
 		do_cmd("PD8 SET");
 #if 1
@@ -584,9 +587,9 @@ printf("%s\r\n", buf);
 		do_cmd("wpm 12 0x17 0x7C02");
 		do_cmd("wpm 12 0x18 0xffaa");
 		do_cmd("wpm 12 0x19 0xf6db");
-		do_cmd("wpm 12 0x1b 0x400");
+		do_cmd("wpm 12 0x1b 0x0965");
 		do_cmd("wpm 12 0x1f 0x1");
-		do_cmd("wpm 12 0x10 0xa400");
+		do_cmd("wpm 12 0x10 0xa404");
 		do_cmd("wpm 12 0x11 0x2108");
 		do_cmd("wpm 12 0x12 0xe0d0");
 		do_cmd("wpm 12 0x14 0x1790");
@@ -596,6 +599,7 @@ printf("%s\r\n", buf);
 		do_cmd("wpm 12 0x10 0x7fb6");
 		do_cmd("wpm 12 0x11 0x3773");
 		do_cmd("wpm 12 0x13 0x6db");
+		do_cmd("wpm 12 0x15 0x03c3");
 		
 		do_cmd("PD9 SET");		
 
@@ -609,9 +613,9 @@ printf("%s\r\n", buf);
 		do_cmd("wpm 13 0x17 0x7C02");
 		do_cmd("wpm 13 0x18 0xffaa");
 		do_cmd("wpm 13 0x19 0xf6db");
-		do_cmd("wpm 13 0x1b 0x400");
+		do_cmd("wpm 13 0x1b 0x0965");
 		do_cmd("wpm 13 0x1f 0x1");
-		do_cmd("wpm 13 0x10 0xa400");
+		do_cmd("wpm 13 0x10 0xa408");
 		do_cmd("wpm 13 0x11 0x2108");
 		do_cmd("wpm 13 0x12 0xe0d0");
 		do_cmd("wpm 13 0x14 0x1790");
@@ -621,6 +625,7 @@ printf("%s\r\n", buf);
 		do_cmd("wpm 13 0x10 0x7fb6");
 		do_cmd("wpm 13 0x11 0x3773");
 		do_cmd("wpm 13 0x13 0x6db");
+		do_cmd("wpm 13 0x15 0x03c3");
 		
 		do_cmd("PD10 SET");	
 		
@@ -634,9 +639,9 @@ printf("%s\r\n", buf);
 		do_cmd("wpm 14 0x17 0x7C02");
 		do_cmd("wpm 14 0x18 0xffaa");
 		do_cmd("wpm 14 0x19 0xf6db");
-		do_cmd("wpm 14 0x1b 0x400");
+		do_cmd("wpm 14 0x1b 0x0965");
 		do_cmd("wpm 14 0x1f 0x1");
-		do_cmd("wpm 14 0x10 0xa400");
+		do_cmd("wpm 14 0x10 0xa40c");
 		do_cmd("wpm 14 0x11 0x2108");
 		do_cmd("wpm 14 0x12 0xe0d0");
 		do_cmd("wpm 14 0x14 0x1790");
@@ -646,11 +651,12 @@ printf("%s\r\n", buf);
 		do_cmd("wpm 14 0x10 0x7fb6");
 		do_cmd("wpm 14 0x11 0x3773");
 		do_cmd("wpm 14 0x13 0x6db");
+		do_cmd("wpm 14 0x15 0x03c3");
 		
 		do_cmd("PD11 SET");	
 #endif
 	}
-	else if(strncmp("init2", (char *)buf, 5) == 0)
+	else if(strncmp("tm", (char *)buf, 2) == 0 || strncmp("cm", (char *)buf, 2) == 0)
 	{
 		do_cmd("PD12 SET");
 		do_cmd("wpi 0x00 0x0");
@@ -704,123 +710,282 @@ printf("%s\r\n", buf);
 
 // 1		
 		do_cmd("PD8 RESET");
-		do_cmd("wpi 0x05 0x1");
+		do_cmd("wpi 0x05 0x11");
 		
-		do_cmd("wpm 1 0x1f 0x0");
-		do_cmd("wpm 1 0x09 0x0300");
-		do_cmd("wpm 1 0x00 0x1140");
-		do_cmd("wpm 1 0x17 0x7f82");
-		do_cmd("wpm 1 0x18 0xffff");
-		do_cmd("wpm 1 0x19 0xffff");
-		do_cmd("wpm 1 0x1b 0x800");
-		do_cmd("wpm 1 0x1f 0x1");
-		do_cmd("wpm 1 0x10 0xa40c");
-		do_cmd("wpm 1 0x11 0x2108");
-		do_cmd("wpm 1 0x12 0xe0d0");
-		do_cmd("wpm 1 0x14 0x1790");
-		do_cmd("wpm 1 0x18 0xcb");
-		do_cmd("wpm 1 0x1e 0x8680");
-		do_cmd("wpm 1 0x1f 0x02");
-		do_cmd("wpm 1 0x10 0x7fb6");
-		do_cmd("wpm 1 0x11 0x7777");
-		do_cmd("wpm 1 0x13 0x6db");
+		do_cmd("wpm 11 0x1f 0x0");
+		do_cmd("wpm 11 0x09 0x0300");
+		do_cmd("wpm 11 0x00 0x1140");
+		if(strncmp("tm1", (char *)buf, 3) == 0)
+		{
+			do_cmd("wpm 11 0x17 0x7f82");
+			do_cmd("wpm 11 0x18 0xffff");
+			do_cmd("wpm 11 0x19 0xffff");
+		}
+		else if(strncmp("tm2", (char *)buf, 3) == 0 || strncmp("tm3", (char *)buf, 3) == 0
+				 || strncmp("tm4", (char *)buf, 3) == 0 || strncmp("cm", (char *)buf, 2) == 0)
+		{
+			do_cmd("wpm 11 0x17 0x7c02");
+			do_cmd("wpm 11 0x18 0xffaa");
+			do_cmd("wpm 11 0x19 0xf6db");
+		}
+		do_cmd("wpm 11 0x1b 0x0965");
+		do_cmd("wpm 11 0x1f 0x1");
+		do_cmd("wpm 11 0x10 0xa400");
+		do_cmd("wpm 11 0x11 0x2108");
+		do_cmd("wpm 11 0x12 0xe0d0");
+		do_cmd("wpm 11 0x14 0x1790");
+		do_cmd("wpm 11 0x18 0xcb");
+		do_cmd("wpm 11 0x1e 0x8680");
+		do_cmd("wpm 11 0x1f 0x02");
+		do_cmd("wpm 11 0x10 0x7fb6");
+		do_cmd("wpm 11 0x11 0x7777");
+		if(strncmp("tm4", (char *)buf, 3) == 0)
+		{
+			do_cmd("wpm 11 0x12 0x0c01");
+		}
+		do_cmd("wpm 11 0x13 0x6db");
+		do_cmd("wpm 11 0x15 0x03c3");
 		
 		do_cmd("PD8 SET");
 #if 1
 // 2		
 		do_cmd("PD9 RESET");
-		do_cmd("wpi 0x06 0x2");
+		do_cmd("wpi 0x06 0x12");
 		
-		do_cmd("wpm 2 0x1f 0x0");
-		do_cmd("wpm 2 0x09 0x0300");
-		do_cmd("wpm 2 0x00 0x1140");
-		do_cmd("wpm 2 0x17 0x7f82");
-		do_cmd("wpm 2 0x18 0xffff");
-		do_cmd("wpm 2 0x19 0xffff");
-		do_cmd("wpm 2 0x1b 0x800");
-		do_cmd("wpm 2 0x1f 0x1");
-		do_cmd("wpm 2 0x10 0xa40c");
-		do_cmd("wpm 2 0x11 0x2108");
-		do_cmd("wpm 2 0x12 0xe0d0");
-		do_cmd("wpm 2 0x14 0x1790");
-		do_cmd("wpm 2 0x18 0xcb");
-		do_cmd("wpm 2 0x1e 0x8680");
-		do_cmd("wpm 2 0x1f 0x02");
-		do_cmd("wpm 2 0x10 0x7fb6");
-		do_cmd("wpm 2 0x11 0x7777");
-		do_cmd("wpm 2 0x13 0x6db");
+		do_cmd("wpm 12 0x1f 0x0");
+		do_cmd("wpm 12 0x09 0x0300");
+		do_cmd("wpm 12 0x00 0x1140");
+		if(strncmp("tm1", (char *)buf, 3) == 0)
+		{
+			do_cmd("wpm 12 0x17 0x7f82");
+			do_cmd("wpm 12 0x18 0xffff");
+			do_cmd("wpm 12 0x19 0xffff");
+		}
+		else if(strncmp("tm2", (char *)buf, 3) == 0 || strncmp("tm3", (char *)buf, 3) == 0
+				 || strncmp("tm4", (char *)buf, 3) == 0 || strncmp("cm", (char *)buf, 2) == 0)
+		{
+			do_cmd("wpm 12 0x17 0x7C02");
+			do_cmd("wpm 12 0x18 0xffaa");
+			do_cmd("wpm 12 0x19 0xf6db");
+		}
+		do_cmd("wpm 12 0x1b 0x0965");
+		do_cmd("wpm 12 0x1f 0x1");
+		do_cmd("wpm 12 0x10 0xa404");
+		do_cmd("wpm 12 0x11 0x2108");
+		do_cmd("wpm 12 0x12 0xe0d0");
+		do_cmd("wpm 12 0x14 0x1790");
+		do_cmd("wpm 12 0x18 0xcb");
+		do_cmd("wpm 12 0x1e 0x8680");
+		do_cmd("wpm 12 0x1f 0x02");
+		do_cmd("wpm 12 0x10 0x7fb6");
+		do_cmd("wpm 12 0x11 0x7777");
+		if(strncmp("tm4", (char *)buf, 3) == 0)
+		{
+			do_cmd("wpm 12 0x12 0x0c01");
+		}
+		do_cmd("wpm 12 0x13 0x6db");
+		do_cmd("wpm 12 0x15 0x03c3");
 		
 		do_cmd("PD9 SET");		
 
 // 3		
 		do_cmd("PD10 RESET");
-		do_cmd("wpi 0x07 0x3");
+		do_cmd("wpi 0x07 0x13");
 		
-		do_cmd("wpm 3 0x1f 0x0");
-		do_cmd("wpm 3 0x09 0x0300");
-		do_cmd("wpm 3 0x00 0x1140");
-		do_cmd("wpm 3 0x17 0x7f82");
-		do_cmd("wpm 3 0x18 0xffff");
-		do_cmd("wpm 3 0x19 0xffff");
-		do_cmd("wpm 3 0x1b 0x800");
-		do_cmd("wpm 3 0x1f 0x1");
-		do_cmd("wpm 3 0x10 0xa40c");
-		do_cmd("wpm 3 0x11 0x2108");
-		do_cmd("wpm 3 0x12 0xe0d0");
-		do_cmd("wpm 3 0x14 0x1790");
-		do_cmd("wpm 3 0x18 0xcb");
-		do_cmd("wpm 3 0x1e 0x8680");
-		do_cmd("wpm 3 0x1f 0x02");
-		do_cmd("wpm 3 0x10 0x7fb6");
-		do_cmd("wpm 3 0x11 0x7777");
-		do_cmd("wpm 3 0x13 0x6db");
+		do_cmd("wpm 13 0x1f 0x0");
+		do_cmd("wpm 13 0x09 0x0300");
+		do_cmd("wpm 13 0x00 0x1140");
+		if(strncmp("tm1", (char *)buf, 3) == 0)
+		{
+			do_cmd("wpm 13 0x17 0x7f82");
+			do_cmd("wpm 13 0x18 0xffff");
+			do_cmd("wpm 13 0x19 0xffff");
+		}
+		else if(strncmp("tm2", (char *)buf, 3) == 0 || strncmp("tm3", (char *)buf, 3) == 0
+				 || strncmp("tm4", (char *)buf, 3) == 0 || strncmp("cm", (char *)buf, 2) == 0)
+		{
+			do_cmd("wpm 13 0x17 0x7c02");
+			do_cmd("wpm 13 0x18 0xffaa");
+			do_cmd("wpm 13 0x19 0xf6db");
+		}
+		do_cmd("wpm 13 0x1b 0x0965");
+		do_cmd("wpm 13 0x1f 0x1");
+		do_cmd("wpm 13 0x10 0xa408");
+		do_cmd("wpm 13 0x11 0x2108");
+		do_cmd("wpm 13 0x12 0xe0d0");
+		do_cmd("wpm 13 0x14 0x1790");
+		do_cmd("wpm 13 0x18 0xcb");
+		do_cmd("wpm 13 0x1e 0x8680");
+		do_cmd("wpm 13 0x1f 0x02");
+		do_cmd("wpm 13 0x10 0x7fb6");
+		do_cmd("wpm 13 0x11 0x7777");
+		if(strncmp("tm4", (char *)buf, 3) == 0)
+		{
+			do_cmd("wpm 13 0x12 0x0c01");
+		}
+		do_cmd("wpm 13 0x13 0x6db");
+		do_cmd("wpm 13 0x15 0x03c3");
 		
 		do_cmd("PD10 SET");	
 		
 // 3		
 		do_cmd("PD11 RESET");
-		do_cmd("wpi 0x08 0x4");
+		do_cmd("wpi 0x08 0x14");
 		
-		do_cmd("wpm 4 0x1f 0x0");
-		do_cmd("wpm 4 0x09 0x0300");
-		do_cmd("wpm 4 0x00 0x1140");
-		do_cmd("wpm 4 0x17 0x7f82");
-		do_cmd("wpm 4 0x18 0xffff");
-		do_cmd("wpm 4 0x19 0xffff");
-		do_cmd("wpm 4 0x1b 0x800");
-		do_cmd("wpm 4 0x1f 0x1");
-		do_cmd("wpm 4 0x10 0xa40c");
-		do_cmd("wpm 4 0x11 0x2108");
-		do_cmd("wpm 4 0x12 0xe0d0");
-		do_cmd("wpm 4 0x14 0x1790");
-		do_cmd("wpm 4 0x18 0xcb");
-		do_cmd("wpm 4 0x1e 0x8680");
-		do_cmd("wpm 4 0x1f 0x02");
-		do_cmd("wpm 4 0x10 0x7fb6");
-		do_cmd("wpm 4 0x11 0x7777");
-		do_cmd("wpm 4 0x13 0x6db");
+		do_cmd("wpm 14 0x1f 0x0");
+		do_cmd("wpm 14 0x09 0x0300");
+		do_cmd("wpm 14 0x00 0x1140");
+		if(strncmp("tm1", (char *)buf, 3) == 0)
+		{
+			do_cmd("wpm 14 0x17 0x7f82");
+			do_cmd("wpm 14 0x18 0xffff");
+			do_cmd("wpm 14 0x19 0xffff");
+		}
+		else if(strncmp("tm2", (char *)buf, 3) == 0 || strncmp("tm3", (char *)buf, 3) == 0
+				 || strncmp("tm4", (char *)buf, 3) == 0 || strncmp("cm", (char *)buf, 2) == 0)
+		{
+			do_cmd("wpm 14 0x17 0x7c02");
+			do_cmd("wpm 14 0x18 0xffaa");
+			do_cmd("wpm 14 0x19 0xf6db");
+		}
+		do_cmd("wpm 14 0x1b 0x0965");
+		do_cmd("wpm 14 0x1f 0x1");
+		do_cmd("wpm 14 0x10 0xa40c");
+		do_cmd("wpm 14 0x11 0x2108");
+		do_cmd("wpm 14 0x12 0xe0d0");
+		do_cmd("wpm 14 0x14 0x1790");
+		do_cmd("wpm 14 0x18 0xcb");
+		do_cmd("wpm 14 0x1e 0x8680");
+		do_cmd("wpm 14 0x1f 0x02");
+		do_cmd("wpm 14 0x10 0x7fb6");
+		do_cmd("wpm 14 0x11 0x7777");
+		if(strncmp("tm4", (char *)buf, 3) == 0)
+		{
+			do_cmd("wpm 14 0x12 0x0c01");
+		}
+		do_cmd("wpm 14 0x13 0x6db");
+		do_cmd("wpm 14 0x15 0x03c3");
 		
 		do_cmd("PD11 SET");	
 		
-		do_cmd("PD8 RESET");	
-		do_cmd("wpm 1 0x1f 0x0");
-		do_cmd("wpm 1 0x09 0x2300");
-		do_cmd("PD8 SET");	
-		
-		do_cmd("PD9 RESET");	
-		do_cmd("wpm 2 0x1f 0x0");
-		do_cmd("wpm 2 0x09 0x2300");
-		do_cmd("PD9 SET");	
-		
-		do_cmd("PD10 RESET");	
-		do_cmd("wpm 3 0x1f 0x0");
-		do_cmd("wpm 3 0x09 0x2300");
-		do_cmd("PD10 SET");	
-		
-		do_cmd("PD11 RESET");	
-		do_cmd("wpm 4 0x1f 0x0");
-		do_cmd("wpm 4 0x09 0x2300");
-		do_cmd("PD11 SET");	
+		if(strncmp("tm1", (char *)buf, 3) == 0)
+		{
+			do_cmd("PD8 RESET");	
+			do_cmd("wpm 11 0x1f 0x0");
+			do_cmd("wpm 11 0x09 0x2300");
+			do_cmd("PD8 SET");	
+			
+			do_cmd("PD9 RESET");	
+			do_cmd("wpm 12 0x1f 0x0");
+			do_cmd("wpm 12 0x09 0x2300");
+			do_cmd("PD9 SET");	
+			
+			do_cmd("PD10 RESET");	
+			do_cmd("wpm 13 0x1f 0x0");
+			do_cmd("wpm 13 0x09 0x2300");
+			do_cmd("PD10 SET");	
+			
+			do_cmd("PD11 RESET");	
+			do_cmd("wpm 14 0x1f 0x0");
+			do_cmd("wpm 14 0x09 0x2300");
+			do_cmd("PD11 SET");	
+		}
+		else if(strncmp("tm2", (char *)buf, 3) == 0)
+		{
+			do_cmd("PD8 RESET");	
+			do_cmd("wpm 11 0x1f 0x0");
+			do_cmd("wpm 11 0x09 0x4300");
+			do_cmd("PD8 SET");	
+			
+			do_cmd("PD9 RESET");	
+			do_cmd("wpm 12 0x1f 0x0");
+			do_cmd("wpm 12 0x09 0x4300");
+			do_cmd("PD9 SET");	
+			
+			do_cmd("PD10 RESET");	
+			do_cmd("wpm 13 0x1f 0x0");
+			do_cmd("wpm 13 0x09 0x4300");
+			do_cmd("PD10 SET");	
+			
+			do_cmd("PD11 RESET");	
+			do_cmd("wpm 14 0x1f 0x0");
+			do_cmd("wpm 14 0x09 0x4300");
+			do_cmd("PD11 SET");	
+		}
+		else if(strncmp("tm3", (char *)buf, 3) == 0)
+		{
+			do_cmd("PD8 RESET");	
+			do_cmd("wpm 11 0x1f 0x0");
+			do_cmd("wpm 11 0x09 0x6300");
+			do_cmd("PD8 SET");	
+			
+			do_cmd("PD9 RESET");	
+			do_cmd("wpm 12 0x1f 0x0");
+			do_cmd("wpm 12 0x09 0x6300");
+			do_cmd("PD9 SET");	
+			
+			do_cmd("PD10 RESET");	
+			do_cmd("wpm 13 0x1f 0x0");
+			do_cmd("wpm 13 0x09 0x6300");
+			do_cmd("PD10 SET");	
+			
+			do_cmd("PD11 RESET");	
+			do_cmd("wpm 14 0x1f 0x0");
+			do_cmd("wpm 14 0x09 0x6300");
+			do_cmd("PD11 SET");	
+		}
+		else if(strncmp("tm4", (char *)buf, 3) == 0)
+		{
+			do_cmd("PD8 RESET");	
+			do_cmd("wpm 11 0x1f 0x0");
+			do_cmd("wpm 11 0x09 0x8300");
+			do_cmd("PD8 SET");	
+			
+			do_cmd("PD9 RESET");	
+			do_cmd("wpm 12 0x1f 0x0");
+			do_cmd("wpm 12 0x09 0x8300");
+			do_cmd("PD9 SET");	
+			
+			do_cmd("PD10 RESET");	
+			do_cmd("wpm 13 0x1f 0x0");
+			do_cmd("wpm 13 0x09 0x8300");
+			do_cmd("PD10 SET");	
+			
+			do_cmd("PD11 RESET");	
+			do_cmd("wpm 14 0x1f 0x0");
+			do_cmd("wpm 14 0x09 0x8300");
+			do_cmd("PD11 SET");	
+		}
+		else if(strncmp("cm", (char *)buf, 2) == 0)
+		{
+			do_cmd("PD8 RESET");	
+			do_cmd("wpm 11 0x1f 0x0");
+			do_cmd("wpm 11 0x09 0x0");
+			do_cmd("wpm 11 0x00 0x2100");
+			do_cmd("wpm 11 0x10 0xc624");
+			do_cmd("PD8 SET");	
+			
+			do_cmd("PD9 RESET");	
+			do_cmd("wpm 12 0x1f 0x0");
+			do_cmd("wpm 12 0x09 0x0");
+			do_cmd("wpm 12 0x00 0x2100");
+			do_cmd("wpm 12 0x10 0xc624");
+			do_cmd("PD9 SET");	
+			
+			do_cmd("PD10 RESET");	
+			do_cmd("wpm 13 0x1f 0x0");
+			do_cmd("wpm 13 0x09 0x0");
+			do_cmd("wpm 13 0x00 0x2100");
+			do_cmd("wpm 13 0x10 0xc624");
+			do_cmd("PD10 SET");	
+			
+			do_cmd("PD11 RESET");	
+			do_cmd("wpm 14 0x1f 0x0");
+			do_cmd("wpm 14 0x09 0x0");
+			do_cmd("wpm 14 0x00 0x2100");
+			do_cmd("wpm 14 0x10 0xc624");
+			do_cmd("PD11 SET");	
+		}
 #endif
 	}
 	else

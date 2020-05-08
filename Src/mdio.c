@@ -543,6 +543,8 @@ void help(void)
 //	printf("8367write <phyAddr> <regAddr> <value>\r\n");
 	printf("init8                            : Init RTL8367RB.\r\n");
 	printf("initp                            : Init PHY.\r\n");
+	printf("tm<1|2|3|4>                      : 1000Base-T Test mode<1|2|3|4>.\r\n");
+	printf("cm                               : 100Base-T Compliance test.\r\n");
 	printf("\r\n");
 	printf("r8i <regAddr>                    : Read  a value from a RTL8367RB register using iic.\r\n");
 	printf("w8i <regAddr> <value>            : Write a value  to  a RTL8367RB register using iic.\r\n");
@@ -553,7 +555,7 @@ void help(void)
 	printf("rpm  <phyAddr|all> <regAddr|all> : Read value(s) from phy register(s) using mdio.\r\n");
 	printf("wpm <phyAddr> <regAddr> <value>  : Write a value to a phy register using mdio.\r\n");
 	printf("\r\n");
-	printf("P<B|D|E><0-15> <RESET|SET>       : RESET or SET a GPIO_PIN. e.g. : PD12 RESET\r\n");
+	printf("P<A|B|D|E><0-15> <RESET|SET>       : RESET or SET a GPIO_PIN. e.g. : PD12 RESET\r\n");
 	printf("=====================================================================================\r\n");
 }
 
